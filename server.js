@@ -1,10 +1,16 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer } from 'apollo-server'
 import  mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import User from './models/User'
-import Post from './models/Post'
+import fs from 'fs'
+import path from 'path'
+
+import User from './models/User.js'
+import Post from './models/Post.js'
 
 dotenv.config({ path: 'variables.env' })
+const __dirname = path.resolve()
+const filePath = path.join(__dirname, 'typeDefs.gql')
+const typeDefs = fs.readFileSync(filePath, 'utf-8')
 
 mongoose
     .connect(process.env.MONGOD_URI, {
@@ -15,26 +21,13 @@ mongoose
     .then(() => console.log("DB connected"))
     .catch(err => console.err(err))
 
-const typeDefs = gql`
-    type Todo {
-        task: String
-        completed: Boolean
-    }
-
-    type Query {
-        getTodos: [Todo]
-    }
-
-    type Mutation {
-        addTodo(task: String, completed: Boolean): Todo
-    }
-`
-
-
 
 const server = new ApolloServer({
-    typeDefs: 
-        typeDefs
+    typeDefs,
+    context: {
+        User,
+        Post
+    }
 })
 
 server.listen().then(({url}) => {
