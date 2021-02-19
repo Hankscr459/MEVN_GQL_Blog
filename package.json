@@ -19,7 +19,7 @@
     "graphql": "^0.13.2",
     "jsonwebtoken": "^8.3.0",
     "md5": "^2.2.1",
-    "mongoose": "^5.2.6"
+    "mongoose": "^5.10.8"
   },
   "devDependencies": {
     "concurrently": "^3.6.0",
