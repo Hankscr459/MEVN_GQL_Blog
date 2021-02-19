@@ -1,11 +1,14 @@
 import { ApolloServer } from 'apollo-server'
 import  mongoose from 'mongoose'
 import dotenv from 'dotenv'
+
 import fs from 'fs'
 import path from 'path'
 
 import User from './models/User.js'
 import Post from './models/Post.js'
+
+import resolvers from './resolvers.js'
 
 dotenv.config({ path: 'variables.env' })
 const __dirname = path.resolve()
@@ -24,6 +27,7 @@ mongoose
 
 const server = new ApolloServer({
     typeDefs,
+    resolvers,
     context: {
         User,
         Post

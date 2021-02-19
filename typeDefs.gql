@@ -26,6 +26,10 @@ type Message {
     messageUser: User!
 }
 
+type Mutation {
+    signupUser(username: String!, email: String!, password: String!): User!
+}
+
 type Query {
-    user(_id: ID!): User
+    getUser: User
 }
