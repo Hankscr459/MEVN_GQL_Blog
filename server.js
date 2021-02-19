@@ -11,6 +11,7 @@ import Post from './models/Post.js'
 import resolvers from './resolvers.js'
 
 dotenv.config({ path: 'variables.env' })
+
 const __dirname = path.resolve()
 const filePath = path.join(__dirname, 'typeDefs.gql')
 const typeDefs = fs.readFileSync(filePath, 'utf-8')
