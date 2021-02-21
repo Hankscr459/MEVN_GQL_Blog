@@ -1,13 +1,12 @@
 <template>
   <v-app style='background: #E3E3EE'>
     <!-- Side Navbar -->
-    <v-navigation-drawer app temporary fixed v-model='sideNav'>
+    <v-navigation-drawer app temporary fixed v-model="sideNav">
       <v-toolbar color='accent' dark flat>
-        <v-toolbar-side-icon @click='toggleSideNav'>
+        <v-toolbar-side-icon @click='toggleSideNav'></v-toolbar-side-icon>
           <router-link to='/' tag='span' style='cursor: pointer'>
             <h1 class="title pl-3">VueShare</h1>
           </router-link>
-        </v-toolbar-side-icon>
       </v-toolbar>
 
       <v-divider></v-divider>
