@@ -1,4 +1,10 @@
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
+const createToken = (user, secret, expiresIn) => {
+    const { username, email } = user
+    return jwt.sign({ username, email }, secret, { expiresIn })
+}
 
 export default {
     Query: {
@@ -33,7 +39,7 @@ export default {
             if (!isValidPassword) {
                 throw new Error('Invalid password')
             }
-            return user
+            return { token: createToken(user, process.env.SECRET, '1hr') }
         },
 
         signupUser: async (_, { username, email, password }, {User}) => {
@@ -46,7 +52,7 @@ export default {
                 email,
                 password
             }).save()
-            return newUser
+            return { token: createToken(newUser, process.env.SECRET, '1hr') }
         }
     }
 }
