@@ -49,12 +49,25 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Signin',
   data () {
     return {
       username: '',
       password: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  watch: {
+    // if user value changes from null to object, redirect to home page
+    user (value) {
+      if (value) {
+        this.$router.push('/')
+      }
     }
   },
   methods: {
