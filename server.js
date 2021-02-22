@@ -1,9 +1,10 @@
-import { ApolloServer } from 'apollo-server'
+import { ApolloServer, AuthenticationError } from 'apollo-server'
 import  mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
 import fs from 'fs'
 import path from 'path'
+import jwt from 'jsonwebtoken'
 
 import User from './models/User.js'
 import Post from './models/Post.js'
@@ -25,13 +26,24 @@ mongoose
     .then(() => console.log("DB connected"))
     .catch(err => console.err(err))
 
+// Verify JWT Token password from client
+const getUser = async token => {
+    if (token) {
+        try {
+            let user = await jwt.verify(token, process.env.SECRET)
+            console.log(user)
+        } catch (err) {
+            throw new AuthenticationError('Your session has ended. Please sign in again.')
+        }
+    }
+}
 
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: {
-        User,
-        Post
+    context: async ({ req }) => {
+        const token = req.headers['authorization']
+        return { User, Post, currentUser: await getUser(token) }
     }
 })
 
