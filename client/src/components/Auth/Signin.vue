@@ -9,6 +9,14 @@
       </v-flex>
     </v-layout>
 
+    <!-- Error alert -->
+    <v-layout v-if="error" row wrap>
+      <v-flex xs12 sm6 offset-sm3>
+        <form-alert :message="error.message"></form-alert>
+      </v-flex>
+    </v-layout>
+
+    <!-- Signin form -->
     <v-layout row wrap>
       <v-flex xs12 sm6 offset-sm3>
         <v-card color="secondary" dark>
@@ -60,7 +68,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(['loading', 'error', 'user'])
   },
   watch: {
     // if user value changes from null to object, redirect to home page
