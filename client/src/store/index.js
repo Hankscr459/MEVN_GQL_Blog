@@ -65,6 +65,7 @@ export default new Vuex.Store({
     },
     signinUser: ({ commit }, payload) => {
       commit('clearError')
+      commit('setLoading', true)
       // clear token to prevent errors
       localStorage.setItem('token', '')
       apolloClient
@@ -73,11 +74,13 @@ export default new Vuex.Store({
           variables: payload
         })
         .then(({ data }) => {
+          commit('setLoading', false)
           localStorage.setItem('token', data.signinUser.token)
           // to make sure created method is run in main.js (we run currrentUser), reload the page
           router.go()
         })
         .catch(err => {
+          commit('setLoading', false)
           commit('setError', err)
           console.log(err)
         })
