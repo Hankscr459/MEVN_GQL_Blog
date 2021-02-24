@@ -27,13 +27,19 @@ type Message {
     messageUser: User!
 }
 
-type Token {
-    token: String!
+type PostsPage {
+    posts: [Post]
+    hasMore: Boolean
 }
 
 type Query {
     getCurrentUser: User
     getPosts: [Post]
+    infinitesScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
+}
+
+type Token {
+    token: String!
 }
 
 type Mutation {

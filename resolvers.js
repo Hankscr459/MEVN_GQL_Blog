@@ -26,6 +26,25 @@ export default {
                 model: 'User'
             })
             return posts
+        },
+        infinitesScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
+            let posts
+            if (pageNum === 1) {
+                posts = await Post.find({}).sort({ createdDate: 'desc' }).populate({
+                    path: 'createdBy',
+                    model: 'User'
+                }).limit(pageSize)
+            } else {
+                // if page number greater than one, figure out how many document to skip
+                const skips = pageSize * (pageNumber -1)
+                posts = await Post.find({}).sort({ createdDate: 'desc' }).populate({
+                    path: 'createdBy',
+                    model: 'User'
+                }).skip(skips)
+            }
+            const totalDocs = await Post.countDocument()
+            const hasMore = totalDocs > pageSize * pageNum
+            return { posts, hasMore }
         }
     },
     Mutation: {
