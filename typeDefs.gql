@@ -35,7 +35,7 @@ type PostsPage {
 type Query {
     getCurrentUser: User
     getPosts: [Post]
-    infinitesScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
+    infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
 }
 
 type Token {
