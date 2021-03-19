@@ -18,6 +18,13 @@ export default {
             })
             return user
         },
+        getPost: async (_, { postId }, { Post }) => {
+            const post = await Post.findOne({ _id: postId }).populate({
+                path: 'messages.messageUser',
+                model: "User"
+            })
+            return post
+        },
         getPosts: async (_, args, { Post }) => {
             const posts = await Post.find({})
             .sort({ createdDate: 'desc' })
