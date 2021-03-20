@@ -36,11 +36,12 @@
     <div class="mt-3">
       <!-- Message Input -->
       <v-flex xs12>
-        <v-form @submit.prevent="handleAddPostMessage">
+        <v-form v-model="isFormValid" @submit.prevent="handleAddPostMessage">
           <v-layout row>
             <v-flex xs12>
               <v-text-field
                 v-model="messageBody"
+                :rules="messageRules"
                 clearable
                 :append-outer-icon="messageBody && 'send'"
                 @click:append-outer="handleAddPostMessage"
@@ -71,7 +72,7 @@
                       </v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action class="hidden-xs-only">
-                      <v-icon color="grey">chat_bubble</v-icon>
+                      <v-icon :color="checkIfOwnMessage(message) ? 'accent' : 'grey'">chat_bubble</v-icon>
                     </v-list-tile-action>
                   </v-list-tile>
                 </template>
@@ -94,7 +95,13 @@ export default {
   data () {
     return {
       dialog: false,
-      messageBody: ''
+      messageBody: '',
+      isFormValid: true,
+      messageRules: [
+        message => !!message || 'Message is required',
+        message =>
+          message.length < 50 || 'Message must be less then 50 characters'
+      ]
     }
   },
   apollo: {
@@ -112,35 +119,38 @@ export default {
   },
   methods: {
     handleAddPostMessage () {
-      const variables = {
-        messageBody: this.messageBody,
-        userId: this.user._id,
-        postId: this.postId
-      }
-      this.$apollo.mutate({
-        mutation: ADD_POST_MESSAGE,
-        variables,
-        update: (cache, { data: { addPostMessage } }) => {
-          const data = cache.readQuery({
-            query: GET_POST,
-            variables: { postId: this.postId }
-          })
-
-          data.getPost.messages.unshift(addPostMessage)
-
-          // console.log('data: ', data)
-          // console.log('add post message', addPostMessage)
-          cache.writeQuery({
-            query: GET_POST,
-            variables: { postId: this.postId },
-            data
-          })
+      if (this.$refs.form.validate()) {
+        const variables = {
+          messageBody: this.messageBody,
+          userId: this.user._id,
+          postId: this.postId
         }
-      })
-        .then(({ data }) => {
-          console.log(data.addPostMessage)
+        this.$apollo.mutate({
+          mutation: ADD_POST_MESSAGE,
+          variables,
+          update: (cache, { data: { addPostMessage } }) => {
+            const data = cache.readQuery({
+              query: GET_POST,
+              variables: { postId: this.postId }
+            })
+
+            data.getPost.messages.unshift(addPostMessage)
+
+            // console.log('data: ', data)
+            // console.log('add post message', addPostMessage)
+            cache.writeQuery({
+              query: GET_POST,
+              variables: { postId: this.postId },
+              data
+            })
+          }
         })
-        .catch(err => console.log(err))
+          .then(({ data }) => {
+            this.$refs.form.reset()
+            console.log(data.addPostMessage)
+          })
+          .catch(err => console.log(err))
+      }
     },
     geToPreviousPage () {
       this.$router.go(-1)
@@ -149,6 +159,9 @@ export default {
       if (window.innerHeight > 500) {
         this.dialog = !this.dialog
       }
+    },
+    checkIfOwnMessage (message) {
+      return this.user && this._id === message.messageUser._id
     }
   }
 }
