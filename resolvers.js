@@ -96,30 +96,33 @@ export default {
             // Find User, Add id of post to it's favorites array (which will be populated as Posts)
             const user = await User.findOneAndUpdate(
                 { username },
-                { $pull: { favorites: postId } },
-                { new: true }
-            ).populate({
-                path: 'favorites',
-                model: 'Post'
-            })
-        },
-
-        unlikePost: async (_, { postId, username }, { Post, User }) => {
-
-            const post = await Post.findOneAndUpdate(
-                { _id: postId },
-                { $inc: { likes: 1 } },
-                { new: true }
-            )
-            // Find User, Remove id of post to it's favorites array (which will be populated as Posts)
-            const user = await User.findOneAndUpdate(
-                { username },
                 { $addToSet: { favorites: postId } },
                 { new: true }
             ).populate({
                 path: 'favorites',
                 model: 'Post'
             })
+            return { likes: post.likes, favorites: user.favorites }
+        },
+
+        unlikePost: async (_, { postId, username }, { Post, User }) => {
+
+            const post = await Post.findOneAndUpdate(
+                { _id: postId },
+                { $inc: { likes: -1 } },
+                { new: true }
+            )
+            // Find User, Remove id of post to it's favorites array (which will be populated as Posts)
+            const user = await User.findOneAndUpdate(
+                { username },
+                { $pull: { favorites: postId } },
+                { new: true }
+            ).populate({
+                path: 'favorites',
+                model: 'Post'
+            })
+
+            return { likes: post.likes, favorites: user.favorites }
         },
 
         signinUser: async (_, { username, password }, { User }) => {

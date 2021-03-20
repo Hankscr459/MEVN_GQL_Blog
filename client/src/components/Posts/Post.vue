@@ -7,7 +7,7 @@
         <v-card hover>
           <v-card-title>
             <h1>{{getPost.title}}</h1>
-            <v-btn large icon v-if="user">
+            <v-btn @click="handleLikePost" large icon v-if="user">
               <v-icon large color="grey">favorite</v-icon>
             </v-btn>
             <h3 class="ml-3 font-weight-thin">{{getPost.likes}} LIKES</h3>
@@ -87,7 +87,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { ADD_POST_MESSAGE, GET_POST } from '../../queries'
+import { ADD_POST_MESSAGE, GET_POST, LIKE_POST, UNLIKE_POST } from '../../queries'
 
 export default {
   name: 'Post',
@@ -118,6 +118,50 @@ export default {
     ...mapGetters(['user'])
   },
   methods: {
+    handleLikePost () {
+      const variables = {
+        postId: this.postId,
+        username: this.user.username
+      }
+      this.$apollo.mutate({
+        mutation: LIKE_POST,
+        variables,
+        update: (cache, { data: { likePost } }) => {
+          const data = cache.readQuery({
+            query: GET_POST,
+            variables: { postId: this.postId }
+          })
+          data.getPost.likes += 1
+        }
+      }).then(({ data }) => {
+        // console.log('user', this.user)
+        // console.log('like post', data.likePost)
+        const updatedUser = { ...this.user, favorites: data.likePost.favorites }
+        this.$store.commit('setUser', updatedUser)
+      }).catch(err => console.error(err))
+    },
+    handleUnlikePost () {
+      const variables = {
+        postId: this.postId,
+        username: this.user.username
+      }
+      this.$apollo.mutate({
+        mutation: UNLIKE_POST,
+        variables,
+        update: (cache, { data: { unlikePost } }) => {
+          const data = cache.readQuery({
+            query: GET_POST,
+            variables: { postId: this.postId }
+          })
+          data.getPost.likes -= 1
+        }
+      }).then(({ data }) => {
+        // console.log('user', this.user)
+        // console.log('like post', data.likePost)
+        const updatedUser = { ...this.user, favorites: data.unlikePost.favorites }
+        this.$store.commit('setUser', updatedUser)
+      }).catch(err => console.error(err))
+    },
     handleAddPostMessage () {
       if (this.$refs.form.validate()) {
         const variables = {
