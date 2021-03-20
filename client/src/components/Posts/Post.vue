@@ -32,6 +32,45 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <!-- Messages Section -->
+    <div class="mt-3">
+      <!-- Message Input -->
+      <v-flex xs12>
+        <v-form>
+          <v-layout row>
+            <v-flex xs12>
+              <v-text-field clearable append-outer-icon="send" label="Add Message" type="text" prepend-icon="email" required></v-text-field>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-list subheader two-line>
+                <v-subheader>Messages ({{getPost.messages.length}})</v-subheader>
+                <template v-for="message in getPost.messages">
+                  <v-list-tile avatar inset :key="message.title">
+                    <v-list-tile-avatar>
+                      <img :src="message.messageUser.avatar">
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        {{message.messageBody}}
+                      </v-list-tile-title>
+                      <v-list-tile-sub-title>
+                        {{message.messageUser.username}}
+                        <span class="grey--text text--lighten-1 hidden-xs-only">{{message.messageDate}}</span>
+                      </v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action class="hidden-xs-only">
+                      <v-icon color="grey">chat_bubble</v-icon>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </template>
+              </v-list>
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-flex>
+    </div>
   </v-container>
 </template>
 
