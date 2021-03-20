@@ -27,6 +27,12 @@ type Message {
     messageUser: User!
 }
 
+#  Likes for Post / Favorites for user
+type LikesFaves {
+    likes: Int
+    favorites: [Post]
+}
+
 type PostsPage {
     posts: [Post]
     hasMore: Boolean
@@ -53,6 +59,10 @@ type Mutation {
     ): Post!
 
     addPostMessage(messageBody: String!, userId: ID!, postId: ID!): Message!
+
+    likePost(postId: ID!, username: String!): LikesFaves!
+
+    unlikePost(postId: ID!, username: String!): LikesFaves!
 
     signinUser(username: String!, password: String!): Token
 
