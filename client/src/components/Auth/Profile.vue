@@ -55,7 +55,7 @@
       <v-layout row wrap>
         <v-flex xs12 sm6 v-for="post in userPosts" :key="post._id">
           <v-card class="mt-3 ml-1 mr-2" hover>
-            <v-btn color="info" floating fab small dark>
+            <v-btn @click="editPostDialog = true" color="info" floating fab small dark>
               <v-icon>edit</v-icon>
             </v-btn>
             <v-btn color="error" floating fab small dark>
@@ -68,6 +68,60 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <!-- Edit Post Dialog -->
+    <v-dialog xs12 sm6 offset-sm3 persistent v-model="editPostDialog">
+      <v-card>
+        <v-card-title class="headline grey lighten-2">Update Post</v-card-title>
+        <v-container>
+          <v-form v-model="isFormValid" lazy-validation ref="form" @submit.prevent="handleUpdateUserPost">
+
+            <!-- Title Input -->
+            <v-layout row>
+              <v-flex xs12>
+                <v-text-field :rules="titleRules" v-model="title" label="Post Title" type="text" required></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <!-- Image Url Input -->
+            <v-layout row>
+              <v-flex xs12>
+                <v-text-field :rules="imageRules" v-model="imageUrl" label="Image Url" type="text" required></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <!-- Image Preview -->
+            <v-layout row>
+              <v-flex xs12>
+                <img :src="imageUrl" height="300px">
+              </v-flex>
+            </v-layout>
+
+            <!-- Categories Select -->
+            <v-layout row>
+              <v-flex xs12>
+                <v-select v-model="categories" :items="['Art', 'Nature', 'Animal', 'Traffic', 'Food']" multiple label="Categories"></v-select>
+              </v-flex>
+            </v-layout>
+
+            <!-- Description Text Area -->
+            <v-layout row>
+              <v-flex xs12>
+                <v-textarea :rules="descRules" v-model="description" label="Description" type="text" required></v-textarea>
+              </v-flex>
+            </v-layout>
+
+            <v-divider></v-divider>
+
+            <v-card-action>
+              <v-spacer></v-spacer>
+              <v-btn type="submit" class="success--text" flat>Update</v-btn>
+              <v-btn class="error--text" flat @click="editPostDialog = false">Cancel</v-btn>
+            </v-card-action>
+
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -76,6 +130,30 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Profile',
+  data () {
+    return {
+      editPostDialog: false,
+      isFormValid: true,
+      title: '',
+      imageUrl: '',
+      categories: [],
+      description: '',
+      titleRules: [
+        title => !!title || 'Title is required',
+        title => title.length < 20 || 'Title must have less than 20 characters'
+      ],
+      imageRules: [image => !!image || 'Image is required'],
+      categoriesRules: [
+        categories =>
+          categories.length >= 1 || 'At least one category is required'
+      ],
+      descRules: [
+        desc => !!desc || 'Description is required',
+        desc =>
+          desc.length < 200 || 'Description must have less than 200 characters'
+      ]
+    }
+  },
   computed: {
     ...mapGetters(['user', 'userPosts'])
   },
@@ -87,6 +165,10 @@ export default {
       this.$store.dispatch('getUserPosts', {
         userId: this.user._id
       })
+    },
+    handleUpdateUserPost () {
+      // update user post action
+
     }
   }
 }
