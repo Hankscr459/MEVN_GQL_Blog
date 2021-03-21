@@ -89,6 +89,16 @@ export default {
             return newPost
         },
 
+        updateUserPost: async (_, { postId, userId, title, imageUrl, categories, description }, { Post }) => {
+            const post = await Post.findOneAndUpdate(
+                // Find post by postId and createdBy
+                { _id: postId, createdBy: userId },
+                { $set: { title, imageUrl, categories, description } },
+                { new: true }
+            )
+            return post
+        },
+
         addPostMessage: async (_, { messageBody, userId, postId }, { Post }) => {
             const newMessage = {
                 messageBody,
