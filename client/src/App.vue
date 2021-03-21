@@ -48,6 +48,18 @@
       <!-- Search Input -->
       <v-text-field v-model="searchTerm" @input="handleSearchPosts" flex prepend-icon='search' placeholder='Search posts' color='primary' single-linehide-details></v-text-field>
 
+      <!-- Search Results Card -->
+      <v-card dark v-if="searchResults.length" id="search__card">
+        <v-list>
+          <v-list-tile v-for="result in searchResults" :key="result._id">
+            <v-list-tile-title>
+              {{result.title}}
+              <span class="font-weight-thin">{{result.description}}</span>
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+
       <v-spacer></v-spacer>
 
       <!-- Horizontal Navbar Links -->
@@ -138,7 +150,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['authError', 'user', 'userFavorites']),
+    ...mapGetters(['searchResults', 'authError', 'user', 'userFavorites']),
     horizontalNavItems () {
       let items = [
         { icon: 'chat', title: 'Posts', link: '/posts' },
@@ -205,6 +217,14 @@ export default {
 /*  User Favorite Animation */
 .bounce {
   animation: bounce 1s both;
+}
+/* Search Result Card */
+#search__card {
+  position: absolute;
+  width: 100vh;
+  z-index: 8;
+  top: 100%;
+  left: 0%;
 }
 
 @keyframes bounce {
