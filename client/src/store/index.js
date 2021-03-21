@@ -47,6 +47,7 @@ export default new Vuex.Store({
     clearUser: state => {
       state.user = null
     },
+    clearSearchResults: state => { state.searchResults = [] },
     clearError: state => {
       state.error = null
     }
@@ -85,7 +86,7 @@ export default new Vuex.Store({
         query: SEARCH_POSTS,
         variables: payload
       }).then(({ data }) => {
-        console.log(data.searchPosts)
+        // console.log(data.searchPosts)
         commit('setSearchResults', data.searchPosts)
       }).catch(err => console.error(err))
     },

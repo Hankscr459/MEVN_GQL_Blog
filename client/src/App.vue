@@ -51,12 +51,18 @@
       <!-- Search Results Card -->
       <v-card dark v-if="searchResults.length" id="search__card">
         <v-list>
-          <v-list-tile v-for="result in searchResults" :key="result._id">
+          <v-list-tile v-for="result in searchResults" :key="result._id" @click="goToSearchResult(result._id)">
             <v-list-tile-title>
               {{result.title}}
-              <span class="font-weight-thin">{{result.description}}</span>
+              <span class="font-weight-thin">{{formatDescription(result.description)}}</span>
             </v-list-tile-title>
+
+            <!-- Show icon if Result Favorited by User -->
+            <v-list-tile-action v-if="checkIfUserFavorite(result._id)">
+              <v-icon>favorite</v-icon>
+            </v-list-tile-action>
           </v-list-tile>
+
         </v-list>
       </v-card>
 
@@ -190,6 +196,23 @@ export default {
     },
     handleSignoutUser () {
       this.$store.dispatch('signoutUser')
+    },
+    formatDescription (desc) {
+      return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc
+    },
+    checkIfUserFavorite (resultId) {
+      return (
+        this.userFavorites &&
+        this.userFavorites.some(fave => fave._id === resultId)
+      )
+    },
+    goToSearchResult (resultId) {
+      // Clear search term
+      this.searchTerm = ''
+      // Go to desired result
+      this.$router.push(`/posts/${resultId}`)
+      // Clear search results
+      this.$store.commit('clearSearchResults')
     },
     toggleSideNav () {
       this.sideNav = !this.sideNav
