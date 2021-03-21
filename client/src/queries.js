@@ -86,6 +86,18 @@ export const GET_POST = gql`
   }
 `
 
+export const SEARCH_POST = gql`
+  query($searchTerm: String) {
+    searchPosts(searchTerm: $searchTerm) {
+      _id
+      title
+      description
+      imageUrl
+      likes
+    }
+  }
+`
+
 // User Queries
 export const GET_CURRENT_USER = gql`
   query {

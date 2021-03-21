@@ -34,6 +34,22 @@ export default {
             })
             return posts
         },
+        searchPosts: async (_, { searchTerm }, { Post }) => {
+            if (searchTerm) {
+                const searchResult = await Post.find(
+                    // Perform text search for search value of 'searchTerm'
+                    { $text: { $search: searchTerm } },
+                    // Assign 'searchTerm' a text score to provide best match
+                    { score: { $meta: 'textScore' } }
+                    // Sort results according to that textScore (as well as by likes in descending order)
+                ).sort({
+                    score: { $meta: 'textScore' },
+                    likes: 'desc'
+                })
+                .limit(5)
+                return searchResult
+            }
+        },
         infiniteScrollPosts: async (_, { pageNum, pageSize }, { Post }) => {
             let posts
             if (pageNum === 1) {
@@ -55,6 +71,7 @@ export default {
         }
     },
     Mutation: {
+
         addPost: async(_, { title, imageUrl, categories, description, creatorId }, { Post }) => {
             const newPost = await new Post({
                 title,
