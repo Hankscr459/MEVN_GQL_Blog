@@ -46,7 +46,7 @@
       <v-spacer></v-spacer>
 
       <!-- Search Input -->
-      <v-text-field flex prepend-icon='search' placeholder='Search posts' color='primary' single-linehide-details></v-text-field>
+      <v-text-field v-model="searchTerm" @input="handleSearchPosts" flex prepend-icon='search' placeholder='Search posts' color='primary' single-linehide-details></v-text-field>
 
       <v-spacer></v-spacer>
 
@@ -107,6 +107,7 @@ export default {
   name: 'App',
   data () {
     return {
+      searchTerm: '',
       sideNav: false,
       authSnackbar: false,
       authErrorSnackbar: false,
@@ -170,6 +171,11 @@ export default {
     }
   },
   methods: {
+    handleSearchPosts () {
+      this.$store.dispatch('searchPosts', {
+        searchTerm: this.searchTerm
+      })
+    },
     handleSignoutUser () {
       this.$store.dispatch('signoutUser')
     },

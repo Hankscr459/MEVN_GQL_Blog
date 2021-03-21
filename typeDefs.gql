@@ -42,7 +42,7 @@ type Query {
     getCurrentUser: User
     getPosts: [Post]
     getPost(postId: ID!): Post!
-    searchPosts(searchItem: String): [Post]
+    searchPosts(searchTerm: String): [Post]
     infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
 }
 
