@@ -91,7 +91,7 @@ export default {
       descRules: [
         desc => !!desc || 'Description is required',
         desc =>
-          desc.length < 200 || 'Description must have less than 200 characters'
+          desc.length < 500 || 'Description must have less than 500 characters'
       ]
     }
   },
