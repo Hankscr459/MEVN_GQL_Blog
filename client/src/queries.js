@@ -164,6 +164,14 @@ export const UPDATE_USER_POST = gql`
   }
 `
 
+export const DELETE_USER_POST = gql`
+  mutation($postId: ID!) {
+    deleteUserPost(postId: $postId) {
+      _id
+    }
+  }
+`
+
 export const LIKE_POST = gql`
   mutation($postId: ID!, $username: String!) {
     likePost(postId: $postId, username: $username) {

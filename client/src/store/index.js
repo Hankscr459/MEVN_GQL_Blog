@@ -10,7 +10,8 @@ import {
   SIGNUP_USER,
   SEARCH_POSTS,
   GET_USER_POSTS,
-  UPDATE_USER_POST
+  UPDATE_USER_POST,
+  DELETE_USER_POST
 } from '../queries'
 import { defaultClient as apolloClient } from '../main'
 
@@ -163,6 +164,25 @@ export default new Vuex.Store({
         })
         .catch(err => {
           console.error(err)
+        })
+    },
+    deleteUserPost: ({ state, commit }, payload) => {
+      apolloClient.mutate({
+        mutation: DELETE_USER_POST,
+        variables: payload
+      })
+        .then(({ data }) => {
+          const index = state.userPosts.findIndex(
+            post => post._id === data.deleteUserPost._id
+          )
+          const userPosts = [
+            ...state.userPosts.slice(0, index),
+            ...state.userPosts.slice(index + 1)
+          ]
+          commit('setUserPosts', userPosts)
+        })
+        .catch(err => {
+          console.log(err)
         })
     },
     signinUser: ({ commit }, payload) => {

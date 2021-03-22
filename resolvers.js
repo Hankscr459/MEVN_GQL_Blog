@@ -89,6 +89,11 @@ export default {
             return newPost
         },
 
+        deleteUserPost: async (_, { postId }, { Post }) => {
+            const post = await Post.findOneAndRemove({ _id: postId })
+            return post
+        },
+
         updateUserPost: async (_, { postId, userId, title, imageUrl, categories, description }, { Post }) => {
             const post = await Post.findOneAndUpdate(
                 // Find post by postId and createdBy
