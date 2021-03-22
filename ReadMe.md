@@ -1,5 +1,5 @@
 # Vue.js  部落格網站
-部落格網站實作練習使用 Vue & node.js Gql 專案，使用 Restful Web API，涵蓋 文章(CRUD)，加入我的最愛、使用者(CRUD)，登入/登出等功能。
+部落格網站實作練習使用 Vue & node.js Gql 專案，使用 Restful Web API，涵蓋 文章(CRUD)、加入我的最愛、搜尋文章，使用者(CRUD)，登入/登出等功能。
 
 
 
